@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Chat {
+  id        Int      @id @default(autoincrement())
+  username  String
+  text      String
+  createdAt DateTime @default(now())
+}
+
+model user {
+  id    Int    @id @default(autoincrement())
+  name  String
+  score Int    @default(0)
+}
+
+model question {
+  id      Int      @id @default(autoincrement())
+  text    String
+  answers answer[]
+  roomId  Int
+  room    room     @relation(fields: [roomId], references: [id])
+}
+
+model room {
+  id        Int        @id @default(autoincrement())
+  name      String
+  questions question[]
+}
+
+model answer {
+  id         Int      @id @default(autoincrement())
+  text       String
+  isCorrect  Boolean
+  questionId Int
+  question   question @relation(fields: [questionId], references: [id])
+}
